@@ -8,7 +8,10 @@ accomodationsRouter.get('/', async (req, res) => {
    
     res.status(200).send(accomodation)
 })
-
+accomodationsRouter.get("/destinations",async(req,res)=>{
+    const cities = await Accomodations.find({city:1})
+    res.status(200).send(cities)
+})
 accomodationsRouter.post("/", async (req, res) => {
     const {name,description,maxGuests,city} = req.body
     if(!name || !description || !maxGuests || !city){
@@ -56,10 +59,7 @@ accomodationsRouter.put("/:id", async(req,res)=>{
       res.status(204).send(updatedAccomodations)
   
 })
-accomodationsRouter.get("/destinations",async(req,res)=>{
-    const cities = await Accomodations.find()
-    res.status(200).send(cities)
-})
+
 
 
 export default accomodationsRouter;
