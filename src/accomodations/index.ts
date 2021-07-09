@@ -10,15 +10,55 @@ accomodationsRouter.get('/', async (req, res) => {
 })
 
 accomodationsRouter.post("/", async (req, res) => {
-    const accomodation = new Accomodations(req.body)
-    await accomodation.save()
+    const {name,description,maxGuests,city} = req.body
+    if(!name || !description || !maxGuests || !city){
+         res.status(400).send({ message: "INVALID_ACCOMODATION" })
+        return
+    }
+    const newAccomodation = new Accomodations({ name,description, maxGuests,city })
 
-    res.status(201). send(accomodation)
+    await newAccomodation.save()
+
+    res.status(201).send(newAccomodation)
 })
+    
+
 
 accomodationsRouter.get("/:id", async (req, res) => {
     const accomodation = await Accomodations.findById(req.params.id)
-    res.status(200).send(accomodation)
+    if(!accomodation){
+        res.status(404).send()
+        return
+    }else{
+        res.status(200).send(accomodation)
+    }
+   
+})
+accomodationsRouter.delete("/:id", async(req,res)=>{
+    const deletedAccomodations = await Accomodations.findByIdAndDelete({ _id: req.params.id })
+    if(!deletedAccomodations){
+         res.status(404).send()
+         return
+    }else{
+        res.status(204).send(deletedAccomodations)
+    }
+
+   
+})
+accomodationsRouter.put("/:id", async(req,res)=>{
+    const {name,description,maxGuests,city} = req.body
+    if(!name || !description  || !maxGuests || !city){
+        res.status(400).send({message:"INVALID_ACCOMODATION"})
+    }
+    const updatedAccomodations = await Accomodations.findByIdAndUpdate(
+    req.params.id,req.body
+  )
+      res.status(204).send(updatedAccomodations)
+  
+})
+accomodationsRouter.get("/destinations",async(req,res)=>{
+    const cities = await Accomodations.find()
+    res.status(200).send(cities)
 })
 
 
